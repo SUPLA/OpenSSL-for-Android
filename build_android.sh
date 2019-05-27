@@ -1,8 +1,8 @@
 #!/bin/sh
 
 WORKDIR=`pwd`"/work"
-OPENSSL="openssl-1.0.2n"
-OPENSSLURL="https://www.openssl.org/source/old/1.0.2/$OPENSSL.tar.gz"
+OPENSSL="openssl-1.0.2r"
+OPENSSLURL="https://www.openssl.org/source/openssl-1.0.2r.tar.gz"
 NDKDIR="/Users/przemek/Library/Android/ndk-r14b"
 TOOLCHAIN="arm-linux-androideabi-4.8"
 PLATFORM="android-12"
