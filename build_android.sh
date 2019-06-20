@@ -40,7 +40,7 @@ for arch in ${archs[@]}; do
         "arm64-v8a")
         export ARCH_FLAGS=""
         export ARCH_LINK=""
-        CONFIGURE_PLATFORM="linux-generic64 -DB_ENDIAN"
+        CONFIGURE_PLATFORM="linux-generic64"
         TOOLCHAINARCH="arm64"
         export TOOL=aarch64-linux-android
         PLATFORM="android-21"
