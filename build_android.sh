@@ -21,6 +21,8 @@ cd $WORKDIR
 
 [ ! -e "$OPENSSL.tar.gz" ] && wget $OPENSSLURL
 
+## https://developer.android.com/ndk/guides/abis
+
 for arch in ${archs[@]}; do
     case ${arch} in
         "armeabi")
@@ -46,14 +48,22 @@ for arch in ${archs[@]}; do
         PLATFORM="android-21"
         ;;
         "x86")
-        export ARCH_FLAGS="-march=i686 -msse3 -mstackrealign -mfpmath=sse"
+        export ARCH_FLAGS="-march=i686 -msse3 -mtune=intel -m32 -mstackrealign -mfpmath=sse"
         export ARCH_LINK="-march=i686"  
         CONFIGURE_PLATFORM="android-x86 no-asm"   
         TOOLCHAINARCH="x86"
         export TOOL=i686-linux-android
+        
+        ## https://android.googlesource.com/platform/bionic/+/android-4.2.1_r1/libc/include/termios.h
+        patch --forward android-toolchain-x86/sysroot/usr/include/termios.h ../patch/x86/termios.h.patch || \
+        [ -e android-toolchain-x86/sysroot/usr/include/termios.h.rej ] || exit 1
+        
+        ## https://android.googlesource.com/platform/bionic/+/android-4.2.1_r1/libc/include/signal.h
+        patch --forward android-toolchain-x86/sysroot/usr/include/signal.h ../patch/x86/signal.h.patch || \
+        [ -e android-toolchain-x86/sysroot/usr/include/signal.h.rej ] || exit 1
         ;;
         "x86_64")
-        export ARCH_FLAGS=""
+        export ARCH_FLAGS="-march=x86-64 -msse4.2 -mpopcnt -m64 -mtune=intel"
         export ARCH_LINK=""
         CONFIGURE_PLATFORM="linux-generic64"
         TOOLCHAINARCH="x86_64"
@@ -87,11 +97,12 @@ for arch in ${archs[@]}; do
     export CFLAGS=" ${ARCH_FLAGS} -fpic -ffunction-sections -funwind-tables -fstack-protector -fno-strict-aliasing -finline-limit=64 "
     export LDFLAGS=" ${ARCH_LINK} "
 
-
     rm -rf $OPENSSL
     tar zxvf $OPENSSL.tar.gz
+        
     cd $OPENSSL
     ./Configure $CONFIGURE_PLATFORM
+    
     PATH=$TOOLCHAIN_PATH:$PATH make
    
     cd .. 
