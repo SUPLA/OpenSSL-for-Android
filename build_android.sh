@@ -3,11 +3,16 @@
 #set -e
 
 WORKDIR=`pwd`"/work"
-OPENSSL="openssl-3.0.5"
+OPENSSL="openssl-3.0.8"
 OPENSSLURL="https://www.openssl.org/source/${OPENSSL}.tar.gz"
-export ANDROID_NDK_ROOT="/Users/przemek/Library/Android/ndk-r23b"
+if [ -n "$ANDROID_NDK_ROOT" ]; then
+    echo "[INFO] Using global ANDROID_NDK_ROOT: $ANDROID_NDK_ROOT"
+else
+    echo "[INFO] ANDROID_NDK_ROOT not set, setting to default value"
+    export ANDROID_NDK_ROOT="/Users/przemek/Library/Android/ndk-r23b"
+fi
 TOOLCHAIN_BIN="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/darwin-x86_64/bin"
-ANDROID_API=21
+ANDROID_API=24
 
 archs=(armeabi-v7a arm64-v8a x86 x86_64)
 #archs=(x86)
@@ -24,7 +29,7 @@ fi
 LIBDIR=`pwd`"/libs"
 cd $WORKDIR
 
-[ ! -e "$OPENSSL.tar.gz" ] && wget $OPENSSLURL
+[ ! -e "$OPENSSL.tar.gz" ] && curl -O $OPENSSLURL
 
 ## https://developer.android.com/ndk/guides/abis
 
