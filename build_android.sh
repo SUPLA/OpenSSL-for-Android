@@ -3,8 +3,8 @@
 #set -e
 
 WORKDIR=`pwd`"/work"
-OPENSSL="openssl-3.0.8"
-OPENSSLURL="https://www.openssl.org/source/${OPENSSL}.tar.gz"
+OPENSSL="openssl-3.6.0"
+OPENSSLURL="https://github.com/openssl/openssl/releases/download/${OPENSSL}/${OPENSSL}.tar.gz"
 if [ -n "$ANDROID_NDK_ROOT" ]; then
     echo "[INFO] Using global ANDROID_NDK_ROOT: $ANDROID_NDK_ROOT"
 else
@@ -29,7 +29,15 @@ fi
 LIBDIR=`pwd`"/libs"
 cd $WORKDIR
 
-[ ! -e "$OPENSSL.tar.gz" ] && curl -O $OPENSSLURL
+if [ ! -e "$OPENSSL.tar.gz" ]; then
+  echo "[INFO] OpenSSL not found, downloading using $OPENSSLURL"
+  curl -LO $OPENSSLURL
+  
+  if [ "$?" -gt 0 ]; then
+    echo "[ERROR] Download failed."
+    exit 1
+  fi
+fi
 
 ## https://developer.android.com/ndk/guides/abis
 
