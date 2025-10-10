@@ -9,7 +9,7 @@ if [ -n "$ANDROID_NDK_ROOT" ]; then
     echo "[INFO] Using global ANDROID_NDK_ROOT: $ANDROID_NDK_ROOT"
 else
     echo "[INFO] ANDROID_NDK_ROOT not set, setting to default value"
-    export ANDROID_NDK_ROOT="/Users/przemek/Library/Android/ndk-r23b"
+    export ANDROID_NDK_ROOT="/Users/przemek/Library/Android/ndk-r27d"
 fi
 TOOLCHAIN_BIN="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/darwin-x86_64/bin"
 ANDROID_API=24
@@ -67,12 +67,12 @@ for arch in ${archs[@]}; do
 
     export CPPFLAGS="-fPIC"
     export CXXFLAGS="-fPIC"
-    
+ 
     rm -rf $OPENSSL
     tar zxvf $OPENSSL.tar.gz
     
     cd $OPENSSL
-    ./Configure $CONFIG_ARGS -D__ANDROID_API__=$ANDROID_API -static no-shared no-tests
+    ./Configure $CONFIG_ARGS -D__ANDROID_API__=$ANDROID_API no-tests
     make
    
     cd .. 
